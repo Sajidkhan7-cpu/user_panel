@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Enquiry Chatbot — Vivek college of commerce Institutee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/chatbot.css">
+</head>
+<body>
+
+<div class="navbar">
+  <div class="brand"> Vivek college of commerce Institute</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">Courses</a>
+    <a href="chatbot.html" class="active">Chatbot</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</div>
+
+<div class="page-title">
+  <div class="eyebrow">Admissions Assistant</div>
+  <h1>Ask about admission, fees, seats, courses &amp; eligibility</h1>
+</div>
+
+<div class="chat-layout">
+
+  <div class="chat-window">
+    <div class="chat-header">
+      <span class="status-dot"></span> Enquiry Assistant · Online
+      <label class="voice-toggle" id="voiceToggleWrap" title="Read replies aloud">
+        <input type="checkbox" id="voiceReplyToggle" />
+        <span>🔊 Voice replies</span>
+      </label>
+    </div>
+
+    <div class="quick-chips" id="quickChips">
+      <div class="chip" data-msg="What courses are available?">Courses available</div>
+      <div class="chip" data-msg="What are the fees for B.Tech CSE?">Fees for CSE</div>
+      <div class="chip" data-msg="How many seats are available in MBA?">Seats in MBA</div>
+      <div class="chip" data-msg="What percentage is required for BCA?">Eligibility for BCA</div>
+      <div class="chip" data-msg="How can I apply for admission?">Admission process</div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot">
+        <div class="bubble">Hello! 👋 I'm the AI assistant. Ask me about admission, fees, seat availability, courses, or eligibility percentage for any program.</div>
+      </div>
+    </div>
+
+    <div class="chat-input-bar">
+      <input type="text" id="chatInput" placeholder="Type your question... e.g. 'Fees for MBA'" autocomplete="off" />
+      <button id="micBtn" type="button" title="Ask by voice">🎤</button>
+      <button id="sendBtn">Send</button>
+    </div>
+    <div class="voice-status" id="voiceStatus"></div>
+  </div>
+
+</div>
+
+
+<script src="assets/js/chatbot.js"></script>
+</body>
+</html>

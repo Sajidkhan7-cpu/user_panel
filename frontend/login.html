@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Student Login — Vivek college of commerce Institute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body>
+  <div class="auth-card">
+    <div class="brand">Vivek college of commerce Institute</div>
+    <h1>Student Login</h1>
+    <p class="sub">Log in to view your enquiry history and application status.</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" required placeholder="••••••••" />
+      </div>
+      <button type="submit" class="btn-submit">Log In</button>
+      <div class="form-msg" id="formMsg"></div>
+    </form>
+
+    <div class="auth-footer">
+      New here? <a href="register.html">Create an account</a>
+      <br />
+      Admin portal: <a href="admin_login.html">Admin Login</a>
+    </div>
+    <a class="back-home" href="index.html">← Back to Home</a>
+  </div>
+
+  <script src="assets/js/login.js"></script>
+</body>
+</html>

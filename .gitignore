@@ -1,0 +1,30 @@
+# --- Python / Backend ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# --- Environment secrets ---
+.env
+*.env.local
+
+# --- Logs ---
+*.log
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- IDE ---
+.vscode/
+.idea/
+
+# --- Database dumps (local only) ---
+*.sqlite3
+
+# --- Node (if any frontend tooling is added later) ---
+node_modules/

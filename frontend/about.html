@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About &amp; Courses — Vivek college of commerce Institute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/home.css">
+
+</head>
+<body>
+<div class="navbar">
+  <div class="brand"><span class="dot">● </span> Vivek college of commerce Institute</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html" class="active">Courses</a>
+    <a href="chatbot.html">Chatbot</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="cta-btn" href="login.html">Student Login</a>
+</div>
+
+<div class="about-hero">
+  <div class="eyebrow">About Our Programs</div>
+  <h1>Courses, fees, seats &amp; eligibility — all in one place</h1>
+  <p>
+    Greenfield Institute of Technology offers undergraduate and postgraduate
+    programs across engineering, computer applications, and management.
+    Below is our live course catalog — ask the chatbot for even more detail,
+    like scholarships or installment options.
+  </p>
+</div>
+
+<div class="course-grid" id="courseGrid">
+  <div class="loading-msg">Loading course catalog…</div>
+</div>
+
+<footer>
+  © 2026 Vivek college of commerce Institute of Technology · Admissions Office · admissions@college.edu.in
+</footer>
+
+<script>
+const API_BASE = window.location.port === "8000" ? "" : "http://localhost:8000";
+
+function seatTagClass(available, total) {
+  if (available <= 0) return "full";
+  if (available / total <= 0.2) return "low";
+  return "ok";
+}
+function seatTagLabel(available, total) {
+  if (available <= 0) return "Seats full";
+  return `${available} of ${total} seats open`;
+}
+
+async function loadCourses() {
+  const grid = document.getElementById("courseGrid");
+  try {
+    const res = await fetch(`${API_BASE}/api/courses/`);
+    if (!res.ok) throw new Error("Failed to fetch");
+    const courses = await res.json();
+
+    if (!courses.length) {
+      grid.innerHTML = `<div class="loading-msg">Course catalog isn't available yet. Please check back soon.</div>`;
+      return;
+    }
+
+    grid.innerHTML = courses.map((c) => `
+      <div class="course-card">
+        <div class="code">${c.short_code || ""}</div>
+        <h3>${c.name}</h3>
+        <dl>
+          <dt>Duration</dt><dd>${c.duration_years} years</dd>
+          <dt>Eligibility</dt><dd>${c.eligibility_percentage}%${c.eligibility_note ? " · " + c.eligibility_note : ""}</dd>
+          <dt>Admission fee</dt><dd>₹${Number(c.admission_fee).toLocaleString("en-IN")}</dd>
+          <dt>Fees / year</dt><dd>₹${Number(c.fees_per_year).toLocaleString("en-IN")}</dd>
+          <dt>Total fees</dt><dd>₹${Number(c.total_fees).toLocaleString("en-IN")}</dd>
+          ${c.scholarship_available ? `<dt>Scholarship</dt><dd>${c.scholarship_available}</dd>` : ""}
+        </dl>
+        <span class="seat-tag ${seatTagClass(c.available_seats, c.total_seats)}">
+          ${seatTagLabel(c.available_seats, c.total_seats)}
+        </span>
+      </div>
+    `).join("");
+  } catch (err) {
+    grid.innerHTML = `<div class="loading-msg">Could not load course data. Please make sure the backend server is running.</div>`;
+    console.error(err);
+  }
+}
+loadCourses();
+</script>
+
+</body>
+</html>
