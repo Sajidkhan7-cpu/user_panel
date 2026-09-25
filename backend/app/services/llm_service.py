@@ -1,44 +1,24 @@
 """
 services/llm_service.py
-Optional AI (LLM) layer, called through the OpenAI Python SDK.
+Optional AI layer via the OpenAI SDK (works with Gemini / Groq / OpenAI —
+just change OPENAI_BASE_URL / OPENAI_API_KEY / OPENAI_MODEL in .env).
 
-Works with ANY provider that offers an OpenAI-compatible endpoint — not
-just OpenAI itself. This project defaults to Google Gemini's free tier
-(no credit card required), since OpenAI's API has no free tier. Swap
-providers anytime by changing OPENAI_BASE_URL / OPENAI_API_KEY /
-OPENAI_MODEL in .env — no code changes needed.
+The LLM does TWO jobs, and never invents facts:
 
-  - Google Gemini (default, free):
-      OPENAI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
-      OPENAI_MODEL=gemini-2.5-flash
-      Get a key (no card): https://aistudio.google.com/apikey
+  1. polish_reply()       Takes an exact, database-built answer and rewrites it
+                          in a warm human voice. Numbers are verified afterwards;
+                          if any number changed, the original answer is used.
+  2. generate_llm_reply() Last-resort fallback for chit-chat / odd questions,
+                          grounded in course + FAQ data and recent chat history.
 
-  - Groq (also free, very fast, open models):
-      OPENAI_BASE_URL=https://api.groq.com/openai/v1
-      OPENAI_MODEL=llama-3.3-70b-versatile
-      Get a key (no card): https://console.groq.com/keys
-
-  - OpenAI (paid, requires billing set up):
-      OPENAI_BASE_URL=   (leave blank — uses OpenAI's default endpoint)
-      OPENAI_MODEL=gpt-5.4-mini
-      Get a key: https://platform.openai.com/api-keys
-
-This is used ONLY as a fallback — when the rule-based keyword/FAQ engine
-in chatbot_service.py can't classify a question at all. Precise facts
-(fees, seats, eligibility %) are always answered by the rule-based engine
-directly from the database, never by the LLM, so numbers can't be
-hallucinated.
-
-To enable:
-  1. pip install openai   (already in requirements.txt)
-  2. Set OPENAI_API_KEY (and OPENAI_BASE_URL/OPENAI_MODEL if needed) in .env
-  3. USE_LLM_FALLBACK=True in backend/.env (this is the default)
-
-If OPENAI_API_KEY is blank, this module safely no-ops and the chatbot
-keeps working on rules + FAQ only, with zero external calls and zero cost.
+Optional .env / config settings (all have defaults, nothing breaks if absent):
+  USE_LLM_HUMANIZE=True   COLLEGE_NAME   BOT_NAME   CONTACT_EMAIL   CONTACT_PHONE
 """
+import json
 import logging
-from typing import Optional
+import re
+from typing import List, Optional, Sequence, Tuple
+
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -47,27 +27,49 @@ from app.models.faq import FAQ
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT_TEMPLATE = """You are the admissions enquiry assistant for Greenfield Institute of Technology.
+COLLEGE_NAME = getattr(settings, "COLLEGE_NAME", "Vivek College of Commerce")
+BOT_NAME = getattr(settings, "BOT_NAME", "Vivi")
+CONTACT_EMAIL = getattr(settings, "CONTACT_EMAIL", "admissions@college.edu.in")
+CONTACT_PHONE = getattr(settings, "CONTACT_PHONE", "+91-9876543210")
 
-Answer the student's question in a warm, concise way (2-4 sentences max).
+SYSTEM_PROMPT_TEMPLATE = """You are {bot}, a friendly and sharp admissions counsellor at {college}.
+You chat like a real person, not a brochure.
 
-CRITICAL RULE: only use the facts listed below. Never invent or guess at
-fees, seat counts, eligibility percentages, or dates. If the answer isn't
-contained in the data below, say you don't have that specific information
-and suggest the student contact the admissions office at
-admissions@college.edu.in or +91-9876543210.
+STYLE
+- Warm, natural, conversational. 2-4 short sentences. Contractions are good. At most one emoji.
+- Mirror the student's language (English, Hindi or Hinglish).
+- If the student shares a worry (low marks, tight budget, confusion), acknowledge it kindly first.
+- Casual chit-chat: answer briefly and kindly, then gently steer back to admissions.
+- Do NOT end with a list of follow-up questions; suggestion buttons are shown separately.
+
+FACT RULES (critical)
+- Use ONLY the facts below. Never invent or guess fees, seats, eligibility %, dates or policies.
+- If the answer isn't in the data, say you don't have that detail and point them to the admissions
+  office: {email} or {phone}.
+- If they ask about a course that is not listed, say we don't currently offer it and mention the
+  closest listed courses that still have seats.
 
 --- COLLEGE DATA ---
 {context}
 --- END COLLEGE DATA ---
 """
 
+POLISH_PROMPT = """You are {bot}, a friendly admissions counsellor at {college}.
+Rewrite the DRAFT answer so it sounds like a helpful human replying in chat.
+
+RULES
+- Keep EVERY number, rupee amount, percentage, email and phone number exactly as written.
+- Do not add, remove or change any fact. Do not invent anything.
+- Keep line breaks and bullet/numbered lists if the draft has them; just make the wording warmer.
+- Do not add follow-up questions or suggestions (shown separately as buttons).
+- Mirror the student's language (English / Hindi / Hinglish). At most one emoji.
+- Output only the rewritten reply, nothing else.
+"""
+
 
 def _build_context(db: Session) -> str:
-    """Formats current courses & FAQs as plain text for the LLM prompt."""
     courses = db.query(Course).all()
     faqs = db.query(FAQ).all()
-
     lines = ["COURSES:"]
     for c in courses:
         line = (
@@ -81,59 +83,125 @@ def _build_context(db: Session) -> str:
         if c.scholarship_available:
             line += f" Scholarship: {c.scholarship_available}."
         lines.append(line)
-
     if faqs:
         lines.append("\nFREQUENTLY ASKED QUESTIONS:")
         for f in faqs:
             lines.append(f"Q: {f.question}\nA: {f.answer}")
-
     return "\n".join(lines)
 
 
 def is_llm_available() -> bool:
-    """True only if the feature is enabled AND an API key is configured."""
     return bool(settings.USE_LLM_FALLBACK and settings.OPENAI_API_KEY.strip())
 
 
-def generate_llm_reply(db: Session, message: str) -> Optional[str]:
-    """
-    Calls the OpenAI API with the student's question, grounded in real
-    course/FAQ data. Returns None (never raises) if the LLM is disabled,
-    unconfigured, or the API call fails for any reason — callers should
-    fall back to the rule-based DEFAULT_REPLY in that case.
-    """
+def _complete(messages: list, max_tokens: int, temperature: float) -> Optional[str]:
+    """Single place that talks to the API. Never raises."""
     if not is_llm_available():
         return None
-
     try:
-        # Imported lazily so the package is only required when this
-        # feature is actually used.
         from openai import OpenAI
     except ImportError:
         logger.warning("openai package not installed — run: pip install openai")
         return None
-
     try:
-        client_kwargs = {"api_key": settings.OPENAI_API_KEY}
+        kwargs = {"api_key": settings.OPENAI_API_KEY}
         if settings.OPENAI_BASE_URL.strip():
-            client_kwargs["base_url"] = settings.OPENAI_BASE_URL.strip()
-
-        client = OpenAI(**client_kwargs)
-        context = _build_context(db)
-        system_prompt = SYSTEM_PROMPT_TEMPLATE.format(context=context)
-
-        response = client.chat.completions.create(
+            kwargs["base_url"] = settings.OPENAI_BASE_URL.strip()
+        client = OpenAI(**kwargs)
+        resp = client.chat.completions.create(
             model=settings.OPENAI_MODEL,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": message},
-            ],
-            max_tokens=250,
-            temperature=0.4,
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
         )
-        reply = response.choices[0].message.content
-        return reply.strip() if reply else None
+        text = resp.choices[0].message.content
+        return text.strip() if text else None
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("LLM call failed: %s", exc)
+        return None
 
-    except Exception as exc:  # noqa: BLE001 — any API/network error should degrade gracefully
-        logger.warning("LLM fallback call failed: %s", exc)
+
+def _history_messages(history: Optional[Sequence[Tuple[str, str]]]) -> list:
+    msgs = []
+    for q, a in (history or []):
+        if q:
+            msgs.append({"role": "user", "content": q})
+        if a:
+            msgs.append({"role": "assistant", "content": a})
+    return msgs
+
+
+def _numbers(text: str) -> set:
+    return {n.replace(",", "").rstrip(".") for n in re.findall(r"\d[\d,]*\.?\d*", text)}
+
+
+def polish_reply(message: str, draft: str, history=None) -> Optional[str]:
+    """Humanises a database-built answer. Returns None if unavailable or if any number changed."""
+    if not getattr(settings, "USE_LLM_HUMANIZE", True):
+        return None
+    system = POLISH_PROMPT.format(bot=BOT_NAME, college=COLLEGE_NAME)
+    user = f"Student asked: {message}\n\nDRAFT:\n{draft}"
+    new = _complete(
+        [{"role": "system", "content": system}, {"role": "user", "content": user}],
+        max_tokens=600, temperature=0.6,
+    )
+    if not new:
+        return None
+    # Safety net: every number in the draft must still be in the rewrite.
+    if not _numbers(draft) <= _numbers(new):
+        logger.info("Humanize rejected: numbers changed. Using original draft.")
+        return None
+    return new
+
+
+def generate_llm_reply(db: Session, message: str, history=None) -> Optional[str]:
+    """Grounded fallback answer with short conversation memory. Returns None on any failure."""
+    if not is_llm_available():
+        return None
+    system = SYSTEM_PROMPT_TEMPLATE.format(
+        bot=BOT_NAME, college=COLLEGE_NAME, email=CONTACT_EMAIL, phone=CONTACT_PHONE,
+        context=_build_context(db),
+    )
+    messages = [{"role": "system", "content": system}]
+    messages += _history_messages(history)
+    messages.append({"role": "user", "content": message})
+    return _complete(messages, max_tokens=500, temperature=0.5)
+
+
+FOLLOWUP_PROMPT = """You help an admissions chatbot for {college}.
+Given the student's question, the bot's answer and the college data, write {n} short follow-up
+questions the student is most likely to ask NEXT.
+
+RULES
+- Each question is under 10 words, natural, and directly related to the topic just discussed.
+- Use exact course names from the data. Only ask things answerable from the data
+  (fees, seats, eligibility, scholarship, admission process, documents, contact).
+- If the course discussed is full or not offered, ask about a similar course that has seats.
+- Never repeat the question the student just asked.
+- Output ONLY a JSON array of strings, nothing else.
+
+--- COLLEGE DATA ---
+{context}
+--- END COLLEGE DATA ---
+"""
+
+
+def generate_followups(db: Session, message: str, reply: str, n: int = 3) -> Optional[List[str]]:
+    """AI-written related questions. Opt-in: set USE_LLM_SUGGESTIONS=True (adds one LLM call per reply)."""
+    if not getattr(settings, "USE_LLM_SUGGESTIONS", False):
+        return None
+    system = FOLLOWUP_PROMPT.format(college=COLLEGE_NAME, n=n, context=_build_context(db))
+    user = f"Student asked: {message}\nBot answered: {reply}"
+    raw = _complete(
+        [{"role": "system", "content": system}, {"role": "user", "content": user}],
+        max_tokens=250, temperature=0.7,
+    )
+    if not raw:
+        return None
+    try:
+        raw = re.sub(r"^```(?:json)?|```$", "", raw.strip(), flags=re.M).strip()
+        items = json.loads(raw)
+        cleaned = [q.strip() for q in items if isinstance(q, str) and 3 <= len(q.strip()) <= 80]
+        return cleaned[:n] or None
+    except (ValueError, TypeError):
         return None

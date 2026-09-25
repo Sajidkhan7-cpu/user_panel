@@ -1,25 +1,23 @@
 /**
  * chatbot.js
- * Handles the enquiry chatbot UI: sending messages to the FastAPI
- * backend (/api/chatbot/ask), rendering the conversation, and
- * populating the "Course Quick Reference" ledger from /api/courses/.
+ * Enquiry chatbot UI: sends messages to /api/chatbot/ask, renders the chat,
+ * shows follow-up suggestion chips returned by the backend, and (optionally)
+ * fills a course ledger if an element with id="ledgerBody" exists.
  */
 
-// If the frontend is served by FastAPI itself (StaticFiles mount in main.py),
-// relative paths work directly. If you run the frontend separately
-// (e.g. VS Code Live Server), change API_BASE to the backend URL below.
 const API_BASE = window.location.port === "8000" ? "" : "http://localhost:8000";
 
 const chatMessages = document.getElementById("chatMessages");
 const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
 const quickChips = document.getElementById("quickChips");
-const ledgerBody = document.getElementById("ledgerBody");
+const ledgerBody = document.getElementById("ledgerBody"); // optional (not in current HTML)
 const micBtn = document.getElementById("micBtn");
 const voiceStatus = document.getElementById("voiceStatus");
 const voiceReplyToggle = document.getElementById("voiceReplyToggle");
 
-// Persist a session id across page reloads so chat history stays linked.
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 function getSessionId() {
   let sid = localStorage.getItem("chatbot_session_id");
   if (!sid) {
@@ -34,11 +32,33 @@ function appendMessage(text, sender) {
   msg.className = `msg ${sender}`;
   const bubble = document.createElement("div");
   bubble.className = "bubble";
+  bubble.style.whiteSpace = "pre-line"; // keeps the bullet lists / line breaks from the backend
   bubble.textContent = text;
   msg.appendChild(bubble);
   chatMessages.appendChild(msg);
   chatMessages.scrollTop = chatMessages.scrollHeight;
   return msg;
+}
+
+// ---- follow-up suggestion chips (rendered under the latest bot reply) ----
+function clearSuggestions() {
+  document.querySelectorAll(".suggestions").forEach((el) => el.remove());
+}
+
+function appendSuggestions(list) {
+  if (!Array.isArray(list) || !list.length) return;
+  const wrap = document.createElement("div");
+  wrap.className = "suggestions";
+  list.forEach((text) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "suggestion-chip";
+    btn.textContent = text;
+    btn.addEventListener("click", () => sendMessage(text));
+    wrap.appendChild(btn);
+  });
+  chatMessages.appendChild(wrap);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 function appendTypingIndicator() {
@@ -59,10 +79,12 @@ async function sendMessage(text, opts = {}) {
   if (!text || !text.trim()) return;
   const spokenByVoice = !!opts.viaVoice;
 
+  clearSuggestions();
   appendMessage(text, "user");
   chatInput.value = "";
   sendBtn.disabled = true;
   appendTypingIndicator();
+  const startedAt = Date.now();
 
   try {
     const res = await fetch(`${API_BASE}/api/chatbot/ask`, {
@@ -74,10 +96,13 @@ async function sendMessage(text, opts = {}) {
     if (!res.ok) throw new Error(`Server responded with ${res.status}`);
     const data = await res.json();
 
+    // Feels more human: the "typing" dots last a moment, longer for longer replies.
+    const humanDelay = Math.min(1200, 400 + data.reply.length * 4);
+    await sleep(Math.max(0, humanDelay - (Date.now() - startedAt)));
+
     removeTypingIndicator();
     appendMessage(data.reply, "bot");
-    // Always speak the answer if the question itself was asked by voice,
-    // even if "Voice replies" is switched off — that's the clear intent.
+    appendSuggestions(data.suggestions);
     speakReply(data.reply, { force: spokenByVoice });
 
     if (data.session_id) {
@@ -107,8 +132,12 @@ quickChips.addEventListener("click", (e) => {
 });
 
 // ---------------------------------------------------------------------------
-// Populate the course quick-reference ledger on the right
+// Optional course ledger (only runs if #ledgerBody exists in the page)
 // ---------------------------------------------------------------------------
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
 function seatClass(available, total) {
   if (available <= 0) return "seats-full";
   if (available / total <= 0.2) return "seats-low";
@@ -116,24 +145,22 @@ function seatClass(available, total) {
 }
 
 async function loadLedger() {
+  if (!ledgerBody) return; // FIX: the current chatbot.html has no ledger, so skip quietly
   try {
     const res = await fetch(`${API_BASE}/api/courses/`);
     if (!res.ok) throw new Error("Failed to load courses");
     const courses = await res.json();
-
     if (!courses.length) {
       ledgerBody.innerHTML = `<div class="ledger-item"><span class="name">No course data yet</span></div>`;
       return;
     }
-
     ledgerBody.innerHTML = courses
       .map((c) => {
         const cls = seatClass(c.available_seats, c.total_seats);
-        const seatLabel =
-          c.available_seats <= 0 ? "Full" : `${c.available_seats}/${c.total_seats} open`;
+        const seatLabel = c.available_seats <= 0 ? "Full" : `${c.available_seats}/${c.total_seats} open`;
         return `
           <div class="ledger-item">
-            <span class="name">${c.name}</span>
+            <span class="name">${escapeHtml(c.name)}</span>
             <div class="row"><span>Eligibility</span><span>${c.eligibility_percentage}%</span></div>
             <div class="row"><span>Fees / yr</span><span>₹${Number(c.fees_per_year).toLocaleString("en-IN")}</span></div>
             <div class="row"><span>Seats</span><span class="${cls}">${seatLabel}</span></div>
@@ -150,13 +177,8 @@ loadLedger();
 chatInput.focus();
 
 // ---------------------------------------------------------------------------
-// Voice Assistant — speech-to-text (mic input) + text-to-speech (bot replies)
-// Uses the browser's built-in Web Speech API. No backend changes needed.
-// Supported in Chrome/Edge; not supported in Firefox or most iOS browsers.
+// Voice Assistant — speech-to-text (mic) + text-to-speech (bot replies)
 // ---------------------------------------------------------------------------
-
-// Remember the user's voice-reply preference across visits.
-// Defaults to ON so answers are spoken automatically unless the user turns it off.
 const savedVoicePref = localStorage.getItem("chatbot_voice_replies");
 voiceReplyToggle.checked = savedVoicePref === null ? true : savedVoicePref === "true";
 
@@ -169,10 +191,13 @@ function speakReply(text, opts = {}) {
   if (!opts.force && !voiceReplyToggle.checked) return;
   if (!("speechSynthesis" in window)) return;
 
-  // Strip characters that read awkwardly aloud (bullets, extra symbols).
-  const cleanText = text.replace(/[•\n]+/g, ". ").replace(/₹/g, "rupees ");
+  // Remove emojis/bullets so the voice doesn't read symbol names aloud.
+  const cleanText = text
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "")
+    .replace(/[•\n]+/g, ". ")
+    .replace(/₹/g, "rupees ");
 
-  window.speechSynthesis.cancel(); // stop any reply currently being read
+  window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(cleanText);
   utterance.rate = 1;
   utterance.pitch = 1;
@@ -180,14 +205,11 @@ function speakReply(text, opts = {}) {
   window.speechSynthesis.speak(utterance);
 }
 
-// Speak the initial greeting aloud too, once voices are ready (browsers load
-// speech synthesis voices asynchronously, so a short delay avoids silence).
 setTimeout(() => {
   const greeting = chatMessages.querySelector(".msg.bot .bubble");
   if (greeting) speakReply(greeting.textContent);
 }, 600);
 
-// ---------------- Speech-to-text (mic button) ----------------
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 let isListening = false;
@@ -230,12 +252,11 @@ if (SpeechRecognition) {
     if (isListening) {
       recognition.stop();
     } else {
-      window.speechSynthesis.cancel(); // don't talk over the user
+      window.speechSynthesis.cancel();
       recognition.start();
     }
   });
 } else {
-  // Browser doesn't support speech recognition (e.g. Firefox) — disable gracefully.
   micBtn.disabled = true;
   micBtn.title = "Voice input isn't supported in this browser. Try Chrome or Edge.";
   micBtn.style.opacity = "0.4";

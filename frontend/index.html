@@ -4,6 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Greenfield Institute of Technology — Admissions</title>
+
+<!-- Login first: if the visitor is not logged in, send them to the login page -->
+<script>
+  (function () {
+    var token = null;
+    try { token = localStorage.getItem("access_token"); } catch (e) {}
+    if (!token) {
+      window.location.replace("login.html");
+    }
+  })();
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/home.css">
@@ -11,7 +23,7 @@
 <body>
 
 <div class="navbar">
-  <div class="brand"><span class="dot">● </span> Vivek college of commerce Institute</div>
+  <div class="brand"><span class="dot"> ● </span> Vivek college of commerce Institute</div>
   <nav>
     <a href="index.html" class="active">Home</a>
     <a href="about.html">Courses</a>

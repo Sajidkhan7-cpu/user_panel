@@ -1,8 +1,12 @@
 """
-models/course.py
+models/course.py   (save this file as app/models/course.py)
 Stores each course offered by the college along with the exact data
 the chatbot needs to answer admission / fees / seats / eligibility
 questions.
+
+NEW: `category` groups related courses so the chatbot can suggest
+alternatives when a course is full or not offered, e.g. "computer",
+"business", "engineering", "science", "arts", "law", "medical".
 """
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.sql import func
@@ -16,6 +20,7 @@ class Course(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(150), nullable=False, unique=True)      # e.g. "B.Tech Computer Science"
     short_code = Column(String(20), nullable=True)                 # e.g. "CSE"
+    category = Column(String(50), nullable=True, index=True)       # NEW: e.g. "computer", "business"
     duration_years = Column(Integer, nullable=False, default=4)
 
     total_seats = Column(Integer, nullable=False, default=0)

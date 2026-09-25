@@ -7,6 +7,7 @@ a single `uvicorn app.main:app` command.
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
@@ -40,6 +41,16 @@ app.include_router(admin.router)
 @app.get("/api/health", tags=["Health"])
 def health_check():
     return {"status": "ok", "app": settings.APP_NAME}
+
+
+# ---------------------------------------------------------------------------
+# Open the login page first when visiting http://localhost:8000/
+# NOTE: this route must be defined BEFORE the static files mount below,
+# otherwise the mount at "/" will catch the request first.
+# ---------------------------------------------------------------------------
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/login.html", status_code=302)
 
 
 # ---------------------------------------------------------------------------

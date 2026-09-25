@@ -2736,3 +2736,37 @@ a:focus-visible {
 /* ============================================================
    END
    ============================================================ */
+   
+Suggestions · CSS
+/* Append this to assets/css/chatbot.css */
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 2px 0 14px 8px;
+  animation: suggestionFade 0.35s ease both;
+}
+ 
+.suggestion-chip {
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid #1f4e79;
+  background: #fff;
+  color: #1f4e79;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+ 
+.suggestion-chip:hover {
+  background: #1f4e79;
+  color: #fff;
+  transform: translateY(-1px);
+}
+ 
+@keyframes suggestionFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+ 

@@ -1,5 +1,5 @@
 """
-schemas/course_schema.py
+schemas/course_schema.py   (save as app/schemas/course_schema.py)
 """
 from typing import Optional
 from pydantic import BaseModel
@@ -8,6 +8,7 @@ from pydantic import BaseModel
 class CourseBase(BaseModel):
     name: str
     short_code: Optional[str] = None
+    category: Optional[str] = None      # NEW: "computer", "business", "engineering", ...
     duration_years: int = 4
     total_seats: int = 0
     available_seats: int = 0
@@ -26,6 +27,7 @@ class CourseCreate(CourseBase):
 class CourseUpdate(BaseModel):
     name: Optional[str] = None
     short_code: Optional[str] = None
+    category: Optional[str] = None      # NEW
     duration_years: Optional[int] = None
     total_seats: Optional[int] = None
     available_seats: Optional[int] = None

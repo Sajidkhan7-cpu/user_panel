@@ -1,9 +1,9 @@
 """
 routers/chatbot.py
-The main chatbot endpoint used by frontend/assets/js/chatbot.js.
-Works for both logged-in students and anonymous guests (session_id).
+Main chatbot endpoint used by frontend/assets/js/chatbot.js.
+Works for logged-in students and anonymous guests (session_id).
 """
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 
@@ -33,32 +33,32 @@ def _try_get_user_id(authorization: str | None) -> int | None:
 def ask_chatbot(
     payload: ChatRequest,
     db: Session = Depends(get_db),
-    authorization: str | None = None,
+    # FIX: without Header(), FastAPI treated this as a query parameter, so the
+    # Authorization header was never read.
+    authorization: str | None = Header(default=None),
 ):
-    reply, intent = get_chatbot_reply(db, payload.message)
-
     session_id = payload.session_id or generate_session_id()
-    user_id = _try_get_user_id(authorization)
 
-    history = ChatHistory(
-        user_id=user_id,
+    # The session_id lets the bot remember the last few turns ("and its fees?").
+    reply, intent, suggestions = get_chatbot_reply(db, payload.message, session_id)
+
+    db.add(ChatHistory(
+        user_id=_try_get_user_id(authorization),
         session_id=session_id,
         question=payload.message,
         answer=reply,
         intent=intent,
-    )
-    db.add(history)
+    ))
     db.commit()
 
-    return ChatResponse(reply=reply, intent=intent, session_id=session_id)
+    return ChatResponse(reply=reply, intent=intent, session_id=session_id, suggestions=suggestions)
 
 
 @router.get("/history/{session_id}", response_model=list[ChatHistoryOut])
 def get_history(session_id: str, db: Session = Depends(get_db)):
-    records = (
+    return (
         db.query(ChatHistory)
         .filter(ChatHistory.session_id == session_id)
         .order_by(ChatHistory.created_at.asc())
         .all()
     )
-    return records
