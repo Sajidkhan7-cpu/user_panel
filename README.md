@@ -40,92 +40,93 @@ The chatbot can answer questions related to:
 
 ## 🗂️ Project Structure
 
-user-panel/
-│
-├── .venv/
-│
-├── backend/   Pyhton,FastAPI app, models, routers, services
-│   │
-│   └── app/
-│       ├── __pycache__/
-│       │
-│       ├── dataset/
-│       │   └── faq.json
-│       │
-│       ├── models/
-│       │   ├── __pycache__/
-│       │   ├── __init__.py
-│       │   ├── chat.py
-│       │   ├── course.py
-│       │   ├── faq.py
-│       │   └── user.py
-│       │
-│       ├── routers/
-│       │   ├── __pycache__/
-│       │   ├── __init__.py
-│       │   ├── admin.py
-│       │   ├── auth.py
-│       │   ├── chatbot.py
-│       │   ├── course.py
-│       │   ├── faq.py
-│       │   └── student.py
-│       │
-│       ├── schemas/
-│       │   ├── __pycache__/
-│       │   ├── __init__.py
-│       │   ├── chat_schema.py
-│       │   ├── course_schema.py
-│       │   └── faq_schema.py
-│       │
-│       └── services/
-│           ├── __pycache__/
-│           ├── __init__.py
-│           └── chatbot_service.py
-│
-├── app/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── database.py
-│   ├── main.py
-│   │
-│   └── services/
-│       ├── __pycache__/
-│       ├── __init__.py
-│       ├── chatbot_service.py
-│       ├── llm_service.py
-│       ├── nlp.py
-│       ├── pdf_reader.py
-│       └── suggestion_service.py
-│
-├── database/   PostgreSQL schema + seed
-│   ├── college_chatbot.sql
-│   └── sample_data.sql
-│
-├── frontend/     HTML/CSS/JS pages
-│   ├── assets/
-│   │   ├── css/
-│   │   │   ├── chatbot.css
-│   │   │   ├── home.css
-│   │   │   └── login.css
-│   │   │
-│   │   └── js/
-│   │       ├── chatbot.js
-│   │       ├── home.js
-│   │       └── login.js
-│   │
-│   ├── about.html
-│   ├── chatbot.html
-│   ├── contact.html
-│   ├── index.html
-│   ├── login.html
-│   └── register.html
-│
-├── .env
-├── .gitignore
-├── backfill_categories.py
-├── export_training_data.py
-├── requirements.txt
-└── README.md
+      user-panel/
+      │
+      ├── .venv/
+      │
+      ├── backend/   Pyhton,FastAPI app, models, routers, services
+      │   │
+      │   └── app/
+      │       ├── __pycache__/
+      │       │
+      │       ├── dataset/
+      │       │   └── faq.json
+      │       │
+      │       ├── models/
+      │       │   ├── __pycache__/
+      │       │   ├── __init__.py
+      │       │   ├── chat.py
+      │       │   ├── course.py
+      │       │   ├── faq.py
+      │       │   └── user.py
+      │       │
+      │       ├── routers/
+      │       │   ├── __pycache__/
+      │       │   ├── __init__.py
+      │       │   ├── admin.py
+      │       │   ├── auth.py
+      │       │   ├── chatbot.py
+      │       │   ├── course.py
+      │       │   ├── faq.py
+      │       │   └── student.py
+      │       │
+      │       ├── schemas/
+      │       │   ├── __pycache__/
+      │       │   ├── __init__.py
+      │       │   ├── chat_schema.py
+      │       │   ├── course_schema.py
+      │       │   └── faq_schema.py
+      │       │
+      │       └── services/
+      │           ├── __pycache__/
+      │           ├── __init__.py
+      │           └── chatbot_service.py
+      │
+      ├── app/
+      │   ├── __init__.py
+      │   ├── config.py
+      │   ├── database.py
+      │   ├── main.py
+      │   │
+      │   └── services/
+      │       ├── __pycache__/
+      │       ├── __init__.py
+      │       ├── chatbot_service.py
+      │       ├── llm_service.py
+      │       ├── nlp.py
+      │       ├── pdf_reader.py
+      │       └── suggestion_service.py
+      │
+      ├── database/   PostgreSQL schema + seed
+      │   ├── college_chatbot.sql
+      │   └── sample_data.sql
+      │
+      ├── frontend/     HTML/CSS/JS pages
+      │   ├── assets/
+      │   │   ├── css/
+      │   │   │   ├── chatbot.css
+      │   │   │   ├── home.css
+      │   │   │   └── login.css
+      │   │   │
+      │   │   └── js/
+      │   │       ├── chatbot.js
+      │   │       ├── home.js
+      │   │       └── login.js
+      │   │
+      │   ├── about.html
+      │   ├── chatbot.html
+      │   ├── contact.html
+      │   ├── index.html
+      │   ├── login.html
+      │   └── register.html
+      │
+      ├── .env
+      ├── .gitignore
+      ├── backfill_categories.py
+      ├── export_training_data.py
+      ├── requirements.txt
+      ├── LICENSE
+      └── README.md
 
 See inline comments in each file for details — every module has a docstring
 explaining its purpose.
