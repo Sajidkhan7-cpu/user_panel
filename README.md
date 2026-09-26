@@ -252,32 +252,32 @@ plaintext or fake password hashes directly into SQL.
 
 The chatbot processing flow is:
 
-               Student Question
-                       │
-                       ▼
-              Clean & Tokenize
-                       │
-                       ▼
-                Detect Intent
-                       │
-          ┌────────────┴────────────┐
-          │                         │
-          ▼                         ▼
-    Course Question            General Question
-          │                         │
-          ▼                         ▼
-   Fuzzy Course Match          FAQ Matching
-          │                         │
-          └────────────┬────────────┘
-                       │
-                       ▼
-               Supabase Database
-                       │
-                       ▼
-                 Generate Answer
-                       │
-                       ▼
-                   Student
+                  Student Question
+                        │
+                        ▼
+               Clean & Tokenize
+                        │
+                        ▼
+                  Detect Intent
+                        │
+            ┌────────────┴────────────┐
+            │                         │
+            ▼                         ▼
+      Course Question            General Question
+            │                         │
+            ▼                         ▼
+      Fuzzy Course Match          FAQ Matching
+            │                         │
+            └────────────┬────────────┘
+                        │
+                        ▼
+                  Supabase Database
+                        │
+                        ▼
+                  Generate Answer
+                        │
+                        ▼
+                     Student
 
 ## 🧠 Optional LLM Fallback
 
