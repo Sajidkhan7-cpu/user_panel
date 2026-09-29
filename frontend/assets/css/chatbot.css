@@ -1,0 +1,2477 @@
+/* ==========================================================
+   chatbot.css
+   Greenfield Institute — Admission Assistant (Chat Page)
+
+   Theme: identical to home.css
+   Claymorphism — Purple • Blue • Cyan • Pink accents on a
+   soft matte canvas. Depth comes from paired light/dark
+   shadows (--clay-*), not blur/glass or moving shine.
+   ========================================================== */
+
+
+/* ============================================================
+   1. ROOT VARIABLES  (same tokens as home.css)
+   ============================================================ */
+
+:root {
+
+    --clay-purple-950: #16082f;
+    --clay-purple-900: #211047;
+    --clay-purple-800: #35146b;
+    --clay-purple-700: #5b21b6;
+    --clay-purple-dark: #4c1d95;
+
+    --clay-purple: #8b5cf6;
+    --clay-purple-light: #a78bfa;
+    --clay-purple-pale: #f3e8ff;
+
+    --clay-blue: #3b82f6;
+    --clay-blue-light: #60a5fa;
+    --clay-blue-soft: #eff6ff;
+
+    --clay-cyan: #06b6d4;
+    --clay-cyan-light: #22d3ee;
+    --clay-cyan-soft: #ecfeff;
+    --clay-teal: #0d9488;
+
+    --clay-pink: #ec4899;
+    --clay-pink-soft: #fdf2f8;
+
+    --bg: #ece7f7;
+    --surface: #f6f2fc;
+    --surface-soft: #faf8ff;
+    --white: #ffffff;
+    --paper-raised: linear-gradient(145deg, #fdfcff, #ece6f8);
+
+    --text: #26203a;
+    --text-muted: #6f687e;
+    --text-light: #9b95aa;
+    --text-on-clay: #ffffff;
+    --ink: var(--text);
+
+    --border: #e5e0ee;
+    --border-light: #f0edf5;
+
+    --success: #059669;
+    --clay-mint: #10b981;
+
+    --radius-sm: 14px;
+    --radius-md: 20px;
+    --radius-lg: 26px;
+    --radius-xl: 32px;
+    --radius-pill: 999px;
+    --radius-blob: 30px 34px 26px 32px;
+
+    --serif: "Baloo 2", "Quicksand", "Work Sans", sans-serif;
+    --sans: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", "Courier New", monospace;
+
+    /* Claymorphism: soft puffy depth via a light + dark shadow pair */
+
+    --clay-raised-sm:
+        7px 7px 16px rgba(53, 30, 97, 0.14),
+        -6px -6px 14px rgba(255, 255, 255, 0.85);
+
+    --clay-raised-md:
+        13px 13px 28px rgba(53, 30, 97, 0.16),
+        -10px -10px 22px rgba(255, 255, 255, 0.85);
+
+    --clay-raised-lg:
+        20px 20px 45px rgba(53, 30, 97, 0.20),
+        -14px -14px 30px rgba(255, 255, 255, 0.90);
+
+    --clay-raised-hover:
+        24px 24px 50px rgba(53, 30, 97, 0.24),
+        -16px -16px 34px rgba(255, 255, 255, 0.95);
+
+    --clay-pressed:
+        inset 6px 6px 14px rgba(53, 30, 97, 0.16),
+        inset -6px -6px 14px rgba(255, 255, 255, 0.85);
+
+    --clay-pressed-sm:
+        inset 3px 3px 8px rgba(53, 30, 97, 0.16),
+        inset -3px -3px 8px rgba(255, 255, 255, 0.85);
+
+    /* purple button shadow (same as home .btn-primary) */
+    --clay-raised-purple:
+        10px 10px 22px rgba(76, 29, 149, 0.28),
+        -7px -7px 16px rgba(255, 255, 255, 0.7);
+
+    /* kept for compatibility with any external references */
+    --purple-800: var(--clay-purple-800);
+    --purple-700: var(--clay-purple-700);
+    --purple: var(--clay-purple);
+    --purple-light: var(--clay-purple-light);
+    --purple-soft: var(--clay-purple-pale);
+    --blue: var(--clay-blue);
+    --cyan: var(--clay-cyan);
+    --cyan-light: var(--clay-cyan-light);
+    --pink: var(--clay-pink);
+    --green: var(--clay-mint);
+    --red: var(--clay-pink);
+    --orange: #f59e0b;
+
+    --shadow-sm: var(--clay-raised-sm);
+    --shadow-md: var(--clay-raised-md);
+    --shadow-lg: var(--clay-raised-lg);
+    --shadow-xl: var(--clay-raised-hover);
+    --shadow-purple: var(--clay-raised-purple);
+
+    --max-width: 1180px;
+
+    --ease: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+
+/* ============================================================
+   2. RESET
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+
+    color: var(--text);
+    background: var(--bg);
+
+    font-family: var(--sans);
+    line-height: 1.55;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    border: 0;
+}
+
+a {
+    color: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ============================================================
+   3. SOFT CLAY BACKDROP  (same two blobs as home.css)
+   ============================================================ */
+
+body::before {
+    content: "";
+
+    position: fixed;
+
+    width: 420px;
+    height: 420px;
+
+    top: -180px;
+    left: -160px;
+
+    border-radius: 42% 58% 60% 40% / 45% 40% 60% 55%;
+
+    background: var(--clay-purple-pale);
+
+    opacity: 0.6;
+    filter: blur(4px);
+
+    pointer-events: none;
+    z-index: -1;
+
+    animation: softFloat 14s ease-in-out infinite alternate;
+}
+
+body::after {
+    content: "";
+
+    position: fixed;
+
+    width: 400px;
+    height: 400px;
+
+    right: -170px;
+    bottom: -170px;
+
+    border-radius: 40% 60% 55% 45% / 55% 45% 60% 40%;
+
+    background: var(--clay-cyan-soft);
+
+    opacity: 0.6;
+    filter: blur(4px);
+
+    pointer-events: none;
+    z-index: -1;
+
+    animation: softFloatReverse 16s ease-in-out infinite alternate;
+}
+
+
+/* ============================================================
+   4. NAVBAR  (floating dark-purple clay bar, like home.css)
+   ============================================================ */
+
+.navbar {
+    position: sticky;
+    top: 16px;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+
+    min-height: 74px;
+
+    margin: 16px clamp(16px, 4vw, 60px) 0;
+    padding: 14px clamp(20px, 4vw, 44px);
+
+    color: #ffffff;
+
+    background: linear-gradient(150deg, var(--clay-purple-900) 0%, var(--clay-purple-800) 55%, var(--clay-purple-700) 100%);
+
+    border: none;
+    border-radius: var(--radius-xl);
+
+    box-shadow:
+        16px 16px 34px rgba(22, 8, 47, 0.30),
+        -10px -10px 24px rgba(255, 255, 255, 0.5);
+
+    animation: navEnter 0.6s ease both;
+}
+
+/* static accent line under the bar */
+
+.navbar::after {
+    content: "";
+
+    position: absolute;
+
+    left: 12%;
+    right: 12%;
+    bottom: -1px;
+
+    height: 2px;
+
+    border-radius: 4px;
+
+    background: linear-gradient(90deg, transparent, var(--clay-purple-light), var(--clay-cyan-light), transparent);
+}
+
+.navbar .brand {
+    margin-right: auto;
+
+    color: #ffffff;
+
+    font-family: var(--serif);
+    font-size: clamp(19px, 2vw, 24px);
+    font-weight: 700;
+    letter-spacing: 0.2px;
+
+    white-space: nowrap;
+}
+
+.navbar .brand:hover {
+    transform: translateY(-2px);
+}
+
+.navbar .brand .dot {
+    color: var(--clay-cyan-light);
+
+    font-size: 27px;
+
+    animation: dotPulse 2.2s ease-in-out infinite;
+}
+
+.navbar nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    gap: clamp(12px, 2vw, 26px);
+
+    font-size: 14px;
+}
+
+.navbar nav a {
+    position: relative;
+
+    padding: 8px 2px;
+
+    color: #d8d0e7;
+
+    font-weight: 500;
+
+    text-decoration: none;
+
+    border-radius: 0;
+    background: transparent;
+
+    transition:
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.navbar nav a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 1px;
+
+    height: 2px;
+
+    border-radius: 20px;
+
+    background: linear-gradient(90deg, var(--clay-purple-light), var(--clay-cyan-light));
+
+    transform: scaleX(0);
+    transform-origin: right;
+
+    transition: transform 0.3s ease;
+}
+
+.navbar nav a:hover,
+.navbar nav a.active {
+    color: #ffffff;
+    background: transparent;
+    transform: translateY(-1px);
+}
+
+.navbar nav a:hover::after,
+.navbar nav a.active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* navbar call-to-action pill (if used on this page) */
+
+.navbar .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 41px;
+
+    padding: 9px 18px;
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    background: linear-gradient(145deg, var(--clay-purple-light), var(--clay-purple));
+
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    box-shadow:
+        7px 7px 16px rgba(22, 8, 47, 0.35),
+        -5px -5px 12px rgba(255, 255, 255, 0.12);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.navbar .cta-btn:hover {
+    transform: translateY(-3px);
+}
+
+.navbar .cta-btn:active {
+    transform: translateY(1px);
+
+    box-shadow:
+        inset 4px 4px 10px rgba(22, 8, 47, 0.4),
+        inset -3px -3px 8px rgba(255, 255, 255, 0.08);
+}
+
+
+/* ============================================================
+   5. PAGE TITLE  (styled like the home hero text)
+   ============================================================ */
+
+.page-title {
+    width: 100%;
+    max-width: none;
+
+    margin: 36px 0 22px;
+
+    padding: 0 clamp(20px, 5vw, 76px);
+
+    animation: titleReveal 0.6s var(--ease) both;
+}
+
+.page-title .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 7px 12px;
+
+    border: none;
+    border-radius: 50px;
+
+    background: linear-gradient(145deg, #f8f3ff, #ece3fb);
+
+    box-shadow: var(--clay-raised-sm);
+
+    color: var(--clay-purple-dark);
+
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+.page-title .eyebrow::before {
+    content: "";
+
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, var(--clay-purple), var(--clay-cyan));
+
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.09);
+
+    animation: statusBreathing 2s ease-in-out infinite;
+}
+
+.page-title h1 {
+    margin: 14px 0 8px;
+
+    color: var(--text);
+
+    font-family: var(--serif);
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -1px;
+}
+
+.page-title h1 span {
+    color: var(--clay-purple-dark);
+
+    background: linear-gradient(90deg, var(--clay-purple-dark), var(--clay-blue));
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.page-title p {
+    max-width: 760px;
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 14.5px;
+    line-height: 1.7;
+}
+
+
+/* ============================================================
+   6. MAIN CHAT LAYOUT
+   ============================================================ */
+
+.chat-layout {
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr);
+
+    gap: 24px;
+
+    /* full width, aligned with the navbar edges */
+    width: calc(100% - 2 * clamp(16px, 4vw, 60px));
+    max-width: none;
+
+    margin: 0 auto 40px;
+}
+
+/* add the side column only when a .ledger panel is present */
+.chat-layout:has(.ledger) {
+    grid-template-columns:
+        minmax(0, 1fr)
+        320px;
+}
+
+
+/* ============================================================
+   7. CHAT WINDOW  (same slab as home .catalog-card)
+   ============================================================ */
+
+.chat-window {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    height: calc(100dvh - 290px);
+
+    min-height: 520px;
+
+    overflow: hidden;
+    isolation: isolate;
+
+    border: none;
+    border-radius: var(--radius-blob);
+
+    background: var(--paper-raised);
+
+    box-shadow: var(--clay-raised-hover);
+
+    animation: chatReveal 0.7s 0.05s var(--ease) both;
+}
+.navbar .brand .dot {
+  color: var(--clay-cyan-light);
+
+  font-size: 27px;
+
+  animation: dotPulse 2.2s ease-in-out infinite;
+}
+
+/* static top accent, same as .catalog-card::after */
+
+.chat-window::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 12%;
+    right: 12%;
+
+    height: 4px;
+
+    border-radius: 0 0 20px 20px;
+
+    background: linear-gradient(90deg, var(--clay-purple), var(--clay-cyan));
+
+    z-index: 3;
+
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   8. CHAT HEADER  (same gradient as the navbar)
+   ============================================================ */
+
+.chat-header {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    flex: 0 0 auto;
+
+    min-height: 60px;
+
+    padding: 14px 20px;
+
+    overflow: hidden;
+
+    color: var(--text-on-clay);
+
+    font-family: var(--serif);
+    font-weight: 700;
+
+    background: linear-gradient(150deg, var(--clay-purple-900) 0%, var(--clay-purple-800) 55%, var(--clay-purple-700) 100%);
+
+    z-index: 2;
+}
+
+.chat-header::before {
+    content: "";
+
+    position: absolute;
+
+    top: -70px;
+    right: -40px;
+
+    width: 170px;
+    height: 170px;
+
+    border-radius: 46% 54% 58% 42% / 50% 44% 56% 50%;
+
+    background: rgba(6, 182, 212, 0.12);
+
+    animation: softFloat 8s ease-in-out infinite alternate;
+}
+
+.chat-header .status-dot {
+    position: relative;
+
+    width: 10px;
+    height: 10px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--clay-mint);
+
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.16);
+
+    animation: statusBreathing 2s ease-in-out infinite;
+}
+
+
+/* ============================================================
+   9. VOICE TOGGLE
+   ============================================================ */
+
+.voice-toggle {
+    position: relative;
+
+    z-index: 5;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-left: auto;
+
+    color: #d8d0e7;
+
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.voice-toggle input {
+    width: 15px;
+    height: 15px;
+
+    margin: 0;
+
+    accent-color: var(--clay-cyan);
+
+    cursor: pointer;
+}
+
+
+/* ============================================================
+   10. CHAT MESSAGES
+   ============================================================ */
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    gap: 12px;
+
+    padding: 22px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    scroll-behavior: smooth;
+
+    /* rising clay bubbles — 4 layers drifting at different speeds */
+    background-color: transparent;
+    background-image:
+        radial-gradient(circle at 25% 70%, rgba(139, 92, 246, 0.22) 0 5px, transparent 6px),
+        radial-gradient(circle at 70% 35%, rgba(6, 182, 212, 0.22) 0 8px, transparent 9px),
+        radial-gradient(circle at 45% 55%, transparent 0 12px, rgba(236, 72, 153, 0.24) 13px 14px, transparent 15px),
+        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.18) 0 3px, transparent 4px);
+    background-size: 130px 130px, 210px 210px, 300px 300px, 90px 90px;
+    background-position: 0 0, 0 0, 0 0, 0 0;
+    animation: bubblesRise 34s linear infinite;
+
+    scrollbar-width: thin;
+
+    scrollbar-color: var(--clay-purple-light) transparent;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    border-radius: 99px;
+
+    background: var(--clay-purple-light);
+}
+
+
+/* ============================================================
+   11. MESSAGES
+   ============================================================ */
+
+.msg {
+    display: flex;
+    flex-direction: column;
+
+    width: fit-content;
+
+    max-width: 78%;
+
+    animation: messageReveal 0.4s var(--ease) both;
+}
+
+.msg.bot {
+    align-self: flex-start;
+}
+
+.msg.user {
+    align-self: flex-end;
+
+    align-items: flex-end;
+}
+
+.msg .bubble {
+    position: relative;
+
+    padding: 12px 16px;
+
+    border-radius: var(--radius-md);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    overflow-wrap: anywhere;
+}
+
+/* bot bubble = light raised clay (like .feature-card) */
+
+.msg.bot .bubble {
+    border-bottom-left-radius: 6px;
+
+    color: var(--text);
+
+    background: linear-gradient(145deg, #ffffff, var(--surface));
+
+    box-shadow: var(--clay-raised-sm);
+}
+
+/* user bubble = purple→blue clay (like .btn-primary) */
+
+.msg.user .bubble {
+    border-bottom-right-radius: 6px;
+
+    color: var(--text-on-clay);
+
+    background: linear-gradient(135deg, var(--clay-purple-dark), var(--clay-purple), var(--clay-blue));
+
+    box-shadow: var(--clay-raised-purple);
+}
+
+.msg .meta {
+    margin-top: 5px;
+
+    padding-inline: 4px;
+
+    color: var(--text-light);
+
+    font-family: var(--mono);
+
+    font-size: 9px;
+}
+
+
+/* ============================================================
+   12. TYPING
+   ============================================================ */
+
+.typing-dots {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+.typing-dots span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, var(--clay-purple), var(--clay-cyan));
+
+    animation: typingWave 1.2s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+
+/* ============================================================
+   13. QUICK CHIPS  (same as home .btn-secondary)
+   ============================================================ */
+
+.quick-chips {
+    display: flex;
+    flex-wrap: wrap;
+
+    flex: 0 0 auto;
+
+    gap: 10px;
+
+    padding: 12px 20px 16px;
+
+    background: transparent;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 34px;
+
+    padding: 8px 15px;
+
+    border: none;
+    border-radius: var(--radius-pill);
+
+    color: var(--clay-purple-dark);
+
+    background: linear-gradient(145deg, #ffffff, var(--surface-soft));
+
+    box-shadow: var(--clay-raised-sm);
+
+    font-size: 11.5px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.chip:hover {
+    background: linear-gradient(145deg, #ffffff, var(--clay-purple-pale));
+
+    transform: translateY(-3px);
+
+    box-shadow: var(--clay-raised-md);
+}
+
+.chip:active {
+    transform: translateY(1px);
+
+    box-shadow: var(--clay-pressed-sm);
+}
+
+
+/* ============================================================
+   14. INPUT  (pressed groove, same as home form inputs)
+   ============================================================ */
+
+.chat-input-bar {
+    display: flex;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    gap: 10px;
+
+    padding: 16px 20px;
+
+    background: transparent;
+}
+
+.chat-input-bar input {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 46px;
+
+    padding: 0 16px;
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    outline: none;
+
+    color: var(--text);
+
+    background: var(--surface-soft);
+
+    box-shadow: var(--clay-pressed);
+
+    font-family: var(--sans);
+    font-size: 14px;
+
+    transition:
+        box-shadow 0.25s ease,
+        transform 0.25s ease,
+        background 0.25s ease;
+}
+
+.chat-input-bar input::placeholder {
+    color: var(--text-light);
+
+    transition: opacity 0.25s ease;
+}
+
+.chat-input-bar input:hover {
+    background: #fff;
+}
+
+.chat-input-bar input:focus {
+    background: #fff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        inset 4px 4px 10px rgba(53, 30, 97, 0.12),
+        inset -4px -4px 10px rgba(255, 255, 255, 0.85),
+        0 0 0 4px rgba(139, 92, 246, 0.12);
+}
+
+.chat-input-bar input:focus::placeholder {
+    opacity: 0.45;
+}
+
+
+/* ============================================================
+   15. SEND BUTTON  (same as home .btn-primary)
+   ============================================================ */
+
+.chat-input-bar button {
+    position: relative;
+
+    min-width: 94px;
+
+    height: 46px;
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    color: var(--text-on-clay);
+
+    background: linear-gradient(135deg, var(--clay-purple-dark), var(--clay-purple), var(--clay-blue));
+
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow: var(--clay-raised-purple);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.chat-input-bar button:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        14px 14px 30px rgba(76, 29, 149, 0.34),
+        -9px -9px 20px rgba(255, 255, 255, 0.75);
+}
+
+.chat-input-bar button:active {
+    transform: translateY(1px);
+
+    box-shadow: var(--clay-pressed);
+}
+
+.chat-input-bar button:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+
+    box-shadow: var(--clay-raised-sm);
+
+    transform: none;
+}
+
+
+/* ============================================================
+   16. MICROPHONE
+   ============================================================ */
+
+#micBtn {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 46px;
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    color: var(--clay-purple-dark);
+
+    background: linear-gradient(145deg, #ffffff, var(--surface-soft));
+
+    box-shadow: var(--clay-raised-sm);
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+#micBtn:hover {
+    transform: translateY(-3px);
+
+    background: linear-gradient(145deg, #ffffff, var(--clay-purple-pale));
+
+    box-shadow: var(--clay-raised-md);
+}
+
+#micBtn:active {
+    transform: translateY(1px);
+
+    box-shadow: var(--clay-pressed-sm);
+}
+
+#micBtn.listening {
+    color: white;
+
+    background: linear-gradient(135deg, var(--clay-pink), var(--clay-purple));
+
+    box-shadow: 8px 8px 18px rgba(236, 72, 153, 0.30);
+
+    animation: micPulse 1.2s ease-in-out infinite;
+}
+
+#micBtn.listening::before {
+    content: "";
+
+    position: absolute;
+
+    inset: -6px;
+
+    border: 1px solid rgba(236, 72, 153, 0.35);
+
+    border-radius: inherit;
+
+    animation: micRadar 1.8s ease-out infinite;
+}
+
+
+/* ============================================================
+   17. VOICE STATUS
+   ============================================================ */
+
+.voice-status {
+    flex: 0 0 auto;
+
+    min-height: 18px;
+
+    padding: 0 20px 10px;
+
+    background: transparent;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+
+    font-family: var(--mono);
+}
+
+
+/* ============================================================
+   18. LEDGER / SIDE PANEL  (styled like home .catalog-card)
+   ============================================================ */
+
+.ledger {
+    position: sticky;
+    top: 110px;
+
+    align-self: start;
+
+    padding: 26px 22px;
+
+    border: none;
+    border-radius: var(--radius-blob);
+
+    background: var(--paper-raised);
+
+    box-shadow: var(--clay-raised-lg);
+
+    overflow: hidden;
+
+    animation: ledgerReveal 0.7s 0.15s var(--ease) both;
+}
+
+.ledger::before {
+    content: "";
+
+    display: block;
+
+    width: calc(100% + 44px);
+    height: 4px;
+
+    margin: -26px -22px 18px;
+
+    background: linear-gradient(90deg, var(--clay-purple), var(--clay-blue), var(--clay-cyan), var(--clay-pink));
+}
+
+.ledger h2,
+.ledger h3 {
+    margin: 0 0 12px;
+
+    color: var(--text);
+
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.25;
+}
+
+.ledger-item {
+    padding: 13px 0;
+
+    border-bottom: 1px dashed var(--border);
+}
+
+.ledger-item:last-child {
+    border-bottom: none;
+}
+
+.ledger-item .name {
+    color: var(--text);
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ledger-item .row {
+    color: var(--text-muted);
+
+    font-family: var(--mono);
+    font-size: 10.5px;
+}
+
+
+/* ============================================================
+   19. EMPTY / ERROR / LOADING
+   ============================================================ */
+
+.chat-empty {
+    display: flex;
+
+    flex: 1;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    text-align: center;
+}
+
+.chat-empty .icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 68px;
+    height: 68px;
+
+    margin: 0 auto 16px;
+
+    border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+
+    color: white;
+
+    background: linear-gradient(135deg, var(--clay-purple), var(--clay-blue));
+
+    box-shadow: var(--clay-raised-purple);
+
+    animation: floatingIcon 3s ease-in-out infinite;
+}
+
+.chat-empty h3 {
+    margin: 0 0 6px;
+
+    font-family: var(--serif);
+
+    font-size: 22px;
+    font-weight: 700;
+
+    color: var(--text);
+}
+
+.chat-empty p {
+    max-width: 400px;
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+.chat-error {
+    padding: 11px 14px;
+
+    border: none;
+    border-radius: var(--radius-sm);
+
+    color: #b91c1c;
+
+    background: #fef2f2;
+
+    box-shadow: var(--clay-pressed-sm);
+
+    font-size: 12px;
+
+    animation: messageReveal 0.35s var(--ease) both;
+}
+
+.loading-shimmer {
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: var(--radius-md);
+
+    background: var(--clay-purple-pale);
+}
+
+.loading-shimmer::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    transform: translateX(-100%);
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.65),
+            transparent
+        );
+
+    animation: shimmer 1.5s infinite;
+}
+
+
+/* ============================================================
+   20. ACCESSIBILITY
+   ============================================================ */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+    outline: 3px solid rgba(139, 92, 246, 0.30);
+
+    outline-offset: 3px;
+}
+
+
+/* ============================================================
+   21. TABLET
+   ============================================================ */
+
+@media (max-width: 1000px) {
+
+    .navbar {
+        padding: 13px 24px;
+
+        gap: 18px;
+    }
+
+    .navbar nav {
+        gap: 17px;
+    }
+
+    .chat-layout {
+        width: calc(100% - 30px);
+
+        grid-template-columns: 1fr;
+
+        gap: 20px;
+    }
+
+    .ledger {
+        position: static;
+
+        width: 100%;
+    }
+
+    .chat-window {
+        width: 100%;
+
+        height: calc(100dvh - 260px);
+
+        min-height: 500px;
+    }
+}
+
+
+/* ============================================================
+   22. TABLET / SMALL SCREEN
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .page-title {
+        margin: 32px auto 20px;
+    }
+
+    .page-title h1 {
+        font-size: clamp(28px, 5vw, 38px);
+    }
+
+    .chat-window {
+        height: calc(100dvh - 230px);
+
+        min-height: 450px;
+    }
+}
+
+
+/* ============================================================
+   23. MOBILE
+   ============================================================ */
+
+@media (max-width: 767px) {
+
+    html,
+    body {
+        width: 100%;
+
+        overflow-x: hidden;
+    }
+
+
+    /* ---------- Navbar ---------- */
+
+    .navbar {
+        position: relative;
+
+        display: grid;
+        grid-template-columns: 1fr auto;
+
+        min-height: auto;
+
+        padding: 14px 18px;
+
+        gap: 12px;
+    }
+
+    .navbar .brand {
+        font-size: 20px;
+    }
+
+    .navbar nav {
+        grid-column: 1 / -1;
+
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        gap: 5px 15px;
+
+        width: 100%;
+
+        padding-top: 5px;
+    }
+
+    .navbar nav a {
+        font-size: 12.5px;
+
+        padding: 6px 1px;
+    }
+
+    .navbar .cta-btn {
+        min-height: 37px;
+
+        padding: 7px 12px;
+
+        font-size: 11.5px;
+    }
+
+
+    /* ---------- Page title ---------- */
+
+    .page-title {
+        width: 100%;
+
+        margin: 28px auto 18px;
+
+        padding: 0 16px;
+
+        text-align: center;
+    }
+
+    .page-title .eyebrow {
+        padding: 5px 9px;
+
+        font-size: 8.5px;
+
+        letter-spacing: 1.3px;
+    }
+
+    .page-title h1 {
+        margin: 12px 0 8px;
+
+        font-size: clamp(28px, 8vw, 36px);
+
+        line-height: 1.12;
+
+        letter-spacing: -0.6px;
+    }
+
+    .page-title p {
+        font-size: 13px;
+
+        line-height: 1.6;
+    }
+
+
+    /* ---------- Main layout ---------- */
+
+    .chat-layout {
+        display: flex;
+
+        flex-direction: column;
+
+        width: calc(100% - 20px);
+
+        margin: 0 auto 25px;
+
+        gap: 18px;
+    }
+
+
+    /* ---------- Chat ---------- */
+
+    .chat-window {
+        width: 100%;
+
+        height: calc(100dvh - 225px);
+
+        min-height: 450px;
+
+        max-height: none;
+
+        border-radius: 22px;
+    }
+
+
+    /* ---------- Header ---------- */
+
+    .chat-header {
+        min-height: 55px;
+
+        padding: 11px 13px;
+
+        font-size: 13px;
+    }
+
+    .chat-header .status-dot {
+        width: 9px;
+
+        height: 9px;
+    }
+
+    .voice-toggle {
+        font-size: 9px;
+
+        gap: 4px;
+    }
+
+    .voice-toggle input {
+        width: 14px;
+
+        height: 14px;
+    }
+
+
+    /* ---------- Quick chips ---------- */
+
+    .quick-chips {
+        flex-wrap: nowrap;
+
+        gap: 8px;
+
+        padding: 10px 12px;
+
+        overflow-x: auto;
+
+        overflow-y: hidden;
+
+        scrollbar-width: none;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .quick-chips::-webkit-scrollbar {
+        display: none;
+    }
+
+    .chip {
+        flex: 0 0 auto;
+
+        min-height: 34px;
+
+        padding: 8px 13px;
+
+        font-size: 10px;
+    }
+
+
+    /* ---------- Messages ---------- */
+
+    .chat-messages {
+        padding: 15px;
+
+        gap: 10px;
+    }
+
+    .msg {
+        max-width: 88%;
+    }
+
+    .msg .bubble {
+        padding: 10px 13px;
+
+        font-size: 13px;
+
+        line-height: 1.5;
+    }
+
+
+    /* ---------- Input ---------- */
+
+    .chat-input-bar {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            46px
+            70px;
+
+        gap: 7px;
+
+        padding: 10px;
+    }
+
+    .chat-input-bar input {
+        width: 100%;
+
+        min-width: 0;
+
+        height: 44px;
+
+        padding: 0 12px;
+
+        font-size: 16px;
+    }
+
+    #micBtn {
+        width: 46px;
+
+        height: 44px;
+    }
+
+    .chat-input-bar button {
+        min-width: 0;
+
+        width: 100%;
+
+        height: 44px;
+
+        padding: 0 5px;
+
+        font-size: 11px;
+    }
+
+    .voice-status {
+        padding: 0 10px 8px;
+
+        font-size: 9px;
+    }
+
+
+    /* ---------- Ledger ---------- */
+
+    .ledger {
+        width: 100%;
+
+        padding: 20px 16px;
+
+        border-radius: 22px;
+    }
+
+    .ledger::before {
+        width: calc(100% + 32px);
+
+        margin: -20px -16px 16px;
+    }
+
+    .ledger-item {
+        padding: 11px 0;
+    }
+
+    .ledger-item .name {
+        font-size: 13px;
+
+        line-height: 1.4;
+    }
+
+    .ledger-item .row {
+        font-size: 9px;
+    }
+}
+
+
+/* ============================================================
+   24. SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+    .navbar {
+        padding: 12px 14px;
+    }
+
+    .navbar .brand {
+        font-size: 18px;
+    }
+
+    .navbar nav {
+        gap: 4px 11px;
+    }
+
+    .navbar nav a {
+        font-size: 11.5px;
+    }
+
+    .navbar .cta-btn {
+        min-height: 35px;
+
+        padding: 6px 10px;
+
+        font-size: 10.5px;
+    }
+
+
+    .page-title {
+        margin-top: 20px;
+
+        padding: 0 12px;
+    }
+
+    .page-title .eyebrow {
+        font-size: 8px;
+    }
+
+    .page-title h1 {
+        font-size: 26px;
+    }
+
+    .page-title p {
+        font-size: 12px;
+    }
+
+
+    .chat-layout {
+        width: calc(100% - 12px);
+    }
+
+    .chat-window {
+        height: calc(100dvh - 205px);
+
+        min-height: 430px;
+
+        border-radius: 18px;
+    }
+
+
+    .chat-header {
+        min-height: 52px;
+
+        padding: 9px 10px;
+
+        font-size: 12px;
+    }
+
+    .voice-toggle {
+        font-size: 8px;
+    }
+
+
+    .chat-messages {
+        padding: 11px;
+    }
+
+    .msg {
+        max-width: 92%;
+    }
+
+    .msg .bubble {
+        padding: 9px 11px;
+
+        font-size: 12px;
+    }
+
+
+    .quick-chips {
+        padding: 8px;
+    }
+
+    .chip {
+        font-size: 9.5px;
+
+        padding: 7px 11px;
+    }
+
+
+    .chat-input-bar {
+        grid-template-columns:
+            minmax(0, 1fr)
+            42px
+            62px;
+
+        gap: 5px;
+
+        padding: 8px;
+    }
+
+    .chat-input-bar input {
+        height: 41px;
+
+        font-size: 16px;
+    }
+
+    #micBtn {
+        width: 42px;
+
+        height: 41px;
+    }
+
+    .chat-input-bar button {
+        height: 41px;
+
+        font-size: 10px;
+    }
+
+    .ledger {
+        padding: 18px 14px;
+    }
+
+    .ledger::before {
+        width: calc(100% + 28px);
+
+        margin: -18px -14px 14px;
+    }
+}
+
+
+/* ============================================================
+   25. VERY SMALL PHONE
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+    .navbar .brand {
+        font-size: 16px;
+    }
+
+    .navbar .cta-btn {
+        padding: 5px 8px;
+
+        font-size: 9.5px;
+    }
+
+    .navbar nav {
+        gap: 3px 8px;
+    }
+
+    .navbar nav a {
+        font-size: 10.5px;
+    }
+
+    .page-title {
+        margin-top: 17px;
+    }
+
+    .page-title h1 {
+        font-size: 23px;
+    }
+
+    .page-title p {
+        font-size: 11px;
+    }
+
+    .chat-layout {
+        width: calc(100% - 8px);
+    }
+
+    .chat-window {
+        min-height: 400px;
+
+        height: calc(100dvh - 195px);
+
+        border-radius: 16px;
+    }
+
+    .chat-header {
+        padding: 8px 9px;
+
+        min-height: 48px;
+
+        font-size: 11px;
+    }
+
+    .chat-messages {
+        padding: 8px;
+    }
+
+    .msg {
+        max-width: 94%;
+    }
+
+    .msg .bubble {
+        font-size: 11.5px;
+
+        padding: 8px 9px;
+    }
+
+    .chat-input-bar {
+        grid-template-columns:
+            minmax(0, 1fr)
+            38px
+            56px;
+    }
+
+    #micBtn {
+        width: 38px;
+    }
+
+    .chat-input-bar button {
+        font-size: 9px;
+    }
+}
+
+
+/* ============================================================
+   26. LANDSCAPE PHONE
+   ============================================================ */
+
+@media (max-width: 768px) and (orientation: landscape) {
+
+    .navbar {
+        display: flex;
+        flex-direction: row;
+
+        min-height: 50px;
+
+        padding: 7px 14px;
+    }
+
+    .navbar .brand {
+        width: auto;
+
+        text-align: left;
+    }
+
+    .navbar nav {
+        width: auto;
+
+        padding-top: 0;
+
+        gap: 8px 10px;
+    }
+
+    .navbar nav a {
+        font-size: 10px;
+    }
+
+
+    .page-title {
+        margin: 12px auto;
+    }
+
+    .page-title .eyebrow {
+        display: none;
+    }
+
+    .page-title h1 {
+        font-size: 24px;
+
+        margin: 0;
+    }
+
+    .page-title p {
+        display: none;
+    }
+
+
+    .chat-layout {
+        margin-bottom: 15px;
+    }
+
+    .chat-window {
+        height: calc(100dvh - 105px);
+
+        min-height: 330px;
+    }
+
+    .ledger {
+        display: none;
+    }
+
+    .chat-header {
+        min-height: 45px;
+
+        padding: 7px 10px;
+    }
+
+    .quick-chips {
+        padding: 5px 8px;
+    }
+
+    .chat-messages {
+        padding: 8px;
+    }
+
+    .msg .bubble {
+        padding: 7px 10px;
+
+        font-size: 12px;
+    }
+
+    .chat-input-bar {
+        padding: 6px;
+    }
+
+    .chat-input-bar input,
+    #micBtn,
+    .chat-input-bar button {
+        height: 38px;
+    }
+}
+
+
+/* ============================================================
+   27. TOUCH DEVICES
+   ============================================================ */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .navbar nav a:hover::after {
+        transform: scaleX(0);
+    }
+
+    .chip:hover,
+    .suggestion-chip:hover,
+    .chat-input-bar button:hover,
+    .navbar .cta-btn:hover,
+    #micBtn:hover {
+        transform: none;
+    }
+
+    .chip,
+    .chat-input-bar button,
+    #micBtn {
+        min-height: 42px;
+    }
+}
+
+
+/* ============================================================
+   28. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* ============================================================
+   29. ANIMATIONS
+   ============================================================ */
+
+@keyframes navEnter {
+    from { opacity: 0; transform: translateY(-15px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes softFloat {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 26px) scale(1.06); }
+}
+
+@keyframes softFloatReverse {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-26px, -22px) scale(1.05); }
+}
+
+@keyframes dotPulse {
+    0%, 100% { opacity: 0.75; transform: scale(0.92); }
+    50%      { opacity: 1;    transform: scale(1.1); }
+}
+
+@keyframes titleReveal {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes eyebrowPulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08); }
+    50%      { box-shadow: 0 0 0 7px rgba(139, 92, 246, 0.03); }
+}
+
+@keyframes chatReveal {
+    from { opacity: 0; transform: translateY(26px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ledgerReveal {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes statusBreathing {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08); }
+    50%      { box-shadow: 0 0 0 7px rgba(139, 92, 246, 0.03); }
+}
+
+@keyframes messageReveal {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes typingWave {
+    0%, 70%, 100% { opacity: 0.4; transform: translateY(0) scale(0.85); }
+    35%           { opacity: 1;   transform: translateY(-4px) scale(1); }
+}
+
+@keyframes micPulse {
+    0%, 100% { box-shadow: 8px 8px 18px rgba(236, 72, 153, 0.30); }
+    50%      { box-shadow: 8px 8px 26px rgba(236, 72, 153, 0.48); }
+}
+
+@keyframes micRadar {
+    0%   { opacity: 0.8; transform: scale(0.85); }
+    100% { opacity: 0;   transform: scale(1.6); }
+}
+
+@keyframes floatingIcon {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-7px) rotate(2deg); }
+}
+
+@keyframes shimmer {
+    100% { transform: translateX(100%); }
+}
+
+
+/* ============================================================
+   30. SUGGESTIONS  (same as home .btn-secondary)
+   ============================================================ */
+
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin: 2px 0 14px 8px;
+
+    animation: suggestionFade 0.3s ease both;
+}
+
+.suggestion-chip {
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    padding: 8px 15px;
+
+    border: none;
+    border-radius: var(--radius-pill);
+
+    background: linear-gradient(145deg, #ffffff, var(--surface-soft));
+
+    color: var(--clay-purple-dark);
+
+    box-shadow: var(--clay-raised-sm);
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.suggestion-chip:hover {
+    background: linear-gradient(145deg, #ffffff, var(--clay-purple-pale));
+
+    transform: translateY(-3px);
+
+    box-shadow: var(--clay-raised-md);
+}
+
+.suggestion-chip:active {
+    transform: translateY(1px);
+
+    box-shadow: var(--clay-pressed-sm);
+}
+
+@keyframes suggestionFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ============================================================
+   31. LIVING BACKGROUND
+   Layer 1  soft aurora that slowly orbits behind the chat
+   Layer 2  rising bubbles (parallax, on .chat-messages)
+   Layer 3  twinkling sparkles in the top corner
+   Layer 4  breathing glow on the accent line & status dot
+   ============================================================ */
+
+/* ---- Layer 1: orbiting aurora (transform only = cheap) ---- */
+
+.chat-window::before {
+    content: "";
+
+    position: absolute;
+    inset: -60%;
+
+    z-index: -1;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(circle 260px at 30% 35%, rgba(139, 92, 246, 0.20), transparent 70%),
+        radial-gradient(circle 300px at 72% 60%, rgba(6, 182, 212, 0.18), transparent 70%),
+        radial-gradient(circle 220px at 55% 22%, rgba(236, 72, 153, 0.13), transparent 70%),
+        radial-gradient(circle 240px at 20% 75%, rgba(59, 130, 246, 0.15), transparent 70%);
+
+    animation: auroraOrbit 46s linear infinite;
+}
+
+/* ---- Layer 3: twinkling sparkles ---- */
+
+.chat-window::after {
+    z-index: 3;
+}
+
+.chat-messages {
+    position: relative;
+}
+
+.quick-chips {
+    position: relative;
+}
+
+.quick-chips::after {
+    content: "";
+
+    position: absolute;
+
+    top: 14px;
+    right: 26px;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--clay-purple-light);
+
+    pointer-events: none;
+
+    box-shadow:
+        -34px 18px 0 -1px var(--clay-cyan-light),
+        -74px 4px 0 -2px var(--clay-pink),
+        -118px 22px 0 0 var(--clay-blue-light),
+        -160px 8px 0 -2px var(--clay-purple);
+
+    animation: sparkleTwinkle 3.4s ease-in-out infinite;
+}
+
+/* ---- Layer 4: breathing glow on the accent line ---- */
+
+.chat-window::after {
+    animation: accentGlow 4s ease-in-out infinite;
+}
+
+/* ---- keyframes ---- */
+
+@keyframes auroraOrbit {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* each layer moves a whole number of tiles, so the loop is seamless;
+   different distances = different speeds = parallax depth */
+
+@keyframes bubblesRise {
+    from {
+        background-position: 0 0, 0 0, 0 0, 0 0;
+    }
+    to {
+        background-position:
+            130px -260px,
+            -210px -420px,
+            300px -300px,
+            -90px -270px;
+    }
+}
+
+@keyframes sparkleTwinkle {
+    0%, 100% { opacity: 0.35; transform: scale(0.8) rotate(0deg); }
+    50%      { opacity: 1;    transform: scale(1.15) rotate(20deg); }
+}
+
+@keyframes accentGlow {
+    0%, 100% { filter: brightness(1);   opacity: 0.85; }
+    50%      { filter: brightness(1.25); opacity: 1; }
+}
+
+@media (max-width: 767px) {
+
+    .chat-messages {
+        animation-duration: 42s;
+    }
+
+    .quick-chips::after {
+        display: none;
+    }
+}
+
+
+/* ============================================================
+   32. MORE MOTION
+   1  flowing waves under the input bar
+   2  chips pop in one by one, then float gently
+   3  pinging "online" dot
+   4  send button breathing ring
+   5  colour-shifting aura around the chat window
+   ============================================================ */
+
+/* ---- 1. flowing waves (two layers, opposite directions) ---- */
+
+.chat-input-bar {
+    position: relative;
+}
+
+.chat-input-bar::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 66px;
+
+    z-index: -1;
+
+    pointer-events: none;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 60' preserveAspectRatio='none'%3E%3Cpath d='M0 30 Q150 0 300 30 T600 30 V60 H0Z' fill='%238b5cf6' fill-opacity='0.12'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 60' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q105 8 210 34 T420 34 V60 H0Z' fill='%2306b6d4' fill-opacity='0.12'/%3E%3C/svg%3E");
+    background-repeat: repeat-x, repeat-x;
+    background-size: 600px 60px, 420px 46px;
+    background-position: 0 100%, 0 100%;
+
+    animation: wavesFlow 14s linear infinite;
+}
+
+@keyframes wavesFlow {
+    from { background-position: 0 100%, 0 100%; }
+    to   { background-position: -600px 100%, 420px 100%; }
+}
+
+
+/* ---- 2. chips: pop-in, then float (uses `scale` / `translate`
+        so hover's transform keeps working) ---- */
+
+.chip {
+    animation:
+        chipPop 0.5s var(--ease) backwards,
+        chipFloat 4.6s ease-in-out infinite;
+}
+
+.chip:nth-child(1) { animation-delay: 0.10s, 0.6s; }
+.chip:nth-child(2) { animation-delay: 0.18s, 1.1s; }
+.chip:nth-child(3) { animation-delay: 0.26s, 1.6s; }
+.chip:nth-child(4) { animation-delay: 0.34s, 2.1s; }
+.chip:nth-child(5) { animation-delay: 0.42s, 2.6s; }
+.chip:nth-child(6) { animation-delay: 0.50s, 3.1s; }
+
+.chip:hover {
+    animation-play-state: running, paused;
+}
+
+@keyframes chipPop {
+    from { opacity: 0; scale: 0.6; }
+    to   { opacity: 1; scale: 1; }
+}
+
+@keyframes chipFloat {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -3px; }
+}
+
+
+/* ---- 3. "online" dot sends out a ping ring ---- */
+
+.chat-header .status-dot::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    border-radius: 50%;
+
+    background: var(--clay-mint);
+
+    animation: statusPing 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes statusPing {
+    0%   { opacity: 0.7; transform: scale(1); }
+    80%,
+    100% { opacity: 0;   transform: scale(3.2); }
+}
+
+
+/* ---- 4. send button breathing ring ---- */
+
+.chat-input-bar button:not(#micBtn)::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    border-radius: inherit;
+
+    pointer-events: none;
+
+    animation: sendBreath 3.2s ease-out infinite;
+}
+
+.chat-input-bar button:disabled::after {
+    animation: none;
+}
+
+@keyframes sendBreath {
+    0%   { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.50); }
+    70%,
+    100% { box-shadow: 0 0 0 16px rgba(139, 92, 246, 0); }
+}
+
+
+/* ---- 5. aura: window glow slowly shifts purple → cyan → pink ---- */
+
+.chat-window {
+    animation:
+        chatReveal 0.7s 0.05s var(--ease) both,
+        windowAura 12s ease-in-out 1s infinite;
+}
+
+@keyframes windowAura {
+    0%, 100% {
+        box-shadow:
+            20px 20px 45px rgba(53, 30, 97, 0.20),
+            -14px -14px 30px rgba(255, 255, 255, 0.90),
+            0 0 0 0 rgba(139, 92, 246, 0);
+    }
+    33% {
+        box-shadow:
+            24px 24px 50px rgba(53, 30, 97, 0.24),
+            -16px -16px 34px rgba(255, 255, 255, 0.95),
+            0 0 60px 4px rgba(139, 92, 246, 0.24);
+    }
+    66% {
+        box-shadow:
+            24px 24px 50px rgba(53, 30, 97, 0.24),
+            -16px -16px 34px rgba(255, 255, 255, 0.95),
+            0 0 60px 4px rgba(6, 182, 212, 0.22);
+    }
+}
+
+
+/* ============================================================
+   END
+   ============================================================ */

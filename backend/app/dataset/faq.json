@@ -1,0 +1,44 @@
+[
+  {
+    "category": "admission",
+    "question": "How can I apply for admission?",
+    "keywords": "apply, admission process, how to join, registration",
+    "answer": "You can apply online through our website by filling the application form, uploading your marksheets and ID proof, and paying the admission fee to confirm your seat."
+  },
+  {
+    "category": "admission",
+    "question": "What documents are required for admission?",
+    "keywords": "documents required, documents needed, admission documents",
+    "answer": "You need your 10th and 12th marksheets, transfer certificate, migration certificate, ID proof, passport-size photos, and category certificate (if applicable)."
+  },
+  {
+    "category": "fees",
+    "question": "Is there any scholarship available?",
+    "keywords": "scholarship, fee waiver, financial aid",
+    "answer": "Yes, merit-based and need-based scholarships are available for eligible students. Please check the specific course page or contact the admission office for details."
+  },
+  {
+    "category": "fees",
+    "question": "Can I pay fees in installments?",
+    "keywords": "installment, instalment, emi, pay fees in parts",
+    "answer": "Yes, fees can be paid year-wise or semester-wise as per the college fee schedule. The admission fee must be paid upfront to confirm your seat."
+  },
+  {
+    "category": "general",
+    "question": "What are the college timings?",
+    "keywords": "timings, college hours, office hours",
+    "answer": "The college office is open Monday to Saturday from 9:00 AM to 5:00 PM. Classes generally run from 9:00 AM to 4:00 PM."
+  },
+  {
+    "category": "general",
+    "question": "Does the college provide hostel facilities?",
+    "keywords": "hostel, accommodation, pg, boarding",
+    "answer": "Yes, separate hostel facilities are available for boys and girls on a first-come-first-serve basis, subject to availability."
+  },
+  {
+    "category": "general",
+    "question": "Is transportation facility available?",
+    "keywords": "bus, transport, transportation, college bus",
+    "answer": "Yes, bus transportation is available covering major routes in the city. Please contact the transport office for route details and fees."
+  }
+]

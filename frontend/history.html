@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat History — Vivek College of Commerce </title>
+<script src="assets/js/auth_guard.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/history.css">
+</head>
+<body>
+
+<div class="navbar">
+  <div class="brand"><span class="dot"> ● </span>Vivek College of Commerce</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">Courses</a>
+    <a href="chatbot.html">Chatbot</a>
+    <a href="history.html" class="active">History</a>
+    <a href="profile.html">Profile</a>
+  </nav>
+
+  <button class="logout-btn" onclick="logoutUser()">
+    Logout
+  </button>
+</div>
+
+<main class="history-page">
+
+  <section class="page-title">
+    <div class="eyebrow">Private Student History</div>
+    <h1>My Chat History</h1>
+    <p>
+      Every question you asked and every answer from the
+      college enquiry assistant is saved to your account.
+    </p>
+  </section>
+
+  <section class="history-card">
+
+    <div class="history-toolbar">
+      <div>
+        <h2>Your Conversations</h2>
+        <span id="sessionLabel">
+          Loading your account...
+        </span>
+      </div>
+
+      <div class="actions">
+        <button
+          id="refreshBtn"
+          class="btn secondary"
+          type="button">
+          ↻ Refresh
+        </button>
+
+        <button
+          id="clearBtn"
+          class="btn danger"
+          type="button">
+          Clear History
+        </button>
+      </div>
+    </div>
+
+    <div id="loading" class="state">
+      Loading history...
+    </div>
+
+    <div id="empty" class="state hidden">
+      <div class="empty-icon">💬</div>
+
+      <h3>No chat history yet</h3>
+
+      <p>
+        Start a conversation with the college
+        enquiry assistant.
+      </p>
+
+      <a
+        href="chatbot.html"
+        class="btn primary">
+        Open Chatbot
+      </a>
+    </div>
+
+    <div
+      id="historyList"
+      class="history-list">
+    </div>
+
+  </section>
+
+</main>
+
+<script src="assets/js/history.js"></script>
+</body>
+</html>

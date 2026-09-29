@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — Vivek College of Commerce</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/profile.css">
+</head>
+<body>
+
+<div class="navbar">
+  <div class="brand"><span class="dot"> ● </span>Vivek College of Commerce</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">Courses</a>
+    <a href="chatbot.html">Chatbot</a>
+    <a href="history.html">History</a>
+    <a href="profile.html" class="active">Profile</a>
+  </nav>
+
+  <button id="logoutBtn" class="logout-btn">
+    Logout
+  </button>
+</div>
+
+<main class="profile-page">
+
+  <section class="profile-header">
+    <div class="avatar" id="avatar">S</div>
+
+    <div>
+      <div class="eyebrow">Student Account</div>
+      <h1 id="profileName">Loading...</h1>
+      <p id="profileRole">Student</p>
+    </div>
+  </section>
+
+  <section class="profile-card">
+
+    <h2>Personal Information</h2>
+
+    <div class="profile-grid">
+
+      <div class="profile-field">
+        <span>Full Name</span>
+        <strong id="name">—</strong>
+      </div>
+
+      <div class="profile-field">
+        <span>Email</span>
+        <strong id="email">—</strong>
+      </div>
+
+      <div class="profile-field">
+        <span>Phone</span>
+        <strong id="phone">—</strong>
+      </div>
+
+      <div class="profile-field">
+        <span>Account Type</span>
+        <strong id="role">—</strong>
+      </div>
+
+      <div class="profile-field">
+        <span>user Since</span>
+        <strong id="createdAt">—</strong>
+      </div>
+
+      <div class="profile-field">
+        <span>Account ID</span>
+        <strong id="userId">—</strong>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="profile-actions">
+    <a href="chatbot.html">💬 Start Chat</a>
+    <a href="history.html">🕘 View Chat History</a>
+  </section>
+
+</main>
+
+<script src="assets/js/auth_guard.js"></script>
+<script src="assets/js/profile.js"></script>
+
+</body>
+</html>
