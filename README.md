@@ -42,10 +42,11 @@ The chatbot can answer questions related to:
 
       user-panel/
       │
-      ├── .venv/
+      ├── .vscode/
       │
       ├── backend/   Pyhton,FastAPI app, models, routers, services
       │   │
+      │   ├── venv/
       │   └── app/
       │       ├── __pycache__/
       │       │
@@ -106,15 +107,22 @@ The chatbot can answer questions related to:
       │   │   ├── css/
       │   │   │   ├── chatbot.css
       │   │   │   ├── home.css
+      │   │   │   ├── history.css
+      │   │   │   ├── profile.css
       │   │   │   └── login.css
       │   │   │
       │   │   └── js/
+      │   │       ├── auth_guard.js
       │   │       ├── chatbot.js
       │   │       ├── home.js
+      │   │       ├── history.js
+      │   │       ├── profile.js
       │   │       └── login.js
       │   │
       │   ├── about.html
       │   ├── chatbot.html
+      │   ├── history.html
+      │   ├── profile.html
       │   ├── contact.html
       │   ├── index.html
       │   ├── login.html
