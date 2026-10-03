@@ -1,3 +1,4 @@
+user_panel
 # 🎓 College Enquiry Chatbot
 
 An AI-powered college enquiry chatbot built with **FastAPI + Supabase
