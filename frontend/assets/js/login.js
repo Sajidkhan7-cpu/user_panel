@@ -20,8 +20,14 @@ function showMessage(el, text, type) {
 // ------------------------------------------------------------
 
 const registerForm = document.getElementById("registerForm");
+const nameInput = document.getElementById("name");
 
 if (registerForm) {
+  if (nameInput) {
+    nameInput.addEventListener("input", () => {
+      nameInput.value = nameInput.value.replace(/[^A-Za-z ]/g, "");
+    });
+  }
   registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
